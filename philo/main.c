@@ -21,11 +21,15 @@ void    init_philo(t_sim *sim, t_philo *philos, int argc, char **argv)
     sim->argv = argv;
     if (argc == 6)
         philos->n_meals = ft_atoi(argv[5]);
+    else
+        philos->n_meals = -1;
     philos->t_die = ft_atoi(argv[2]);
     philos->t_eat = ft_atoi(argv[3]);
     philos->t_sleep = ft_atoi(argv[4]);
     philos->left_fork = 0;
     philos->right_fork = 0;
+    if (!philos->t_die || !philos->t_eat || !philos->t_sleep)
+        exit_error("Time arguments must be greater than 0");
 }
 
 int main(int argc, char **argv)
