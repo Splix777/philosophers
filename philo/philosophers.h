@@ -15,6 +15,12 @@
 
 # define DEAD 0
 # define ALIVE 1
+# define EATING 2
+# define SLEEPING 3
+# define THINKING 4
+
+# define LOCK 0
+# define UNLOCK 1
 
 typedef struct s_sim
 {
