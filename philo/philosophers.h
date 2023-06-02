@@ -22,22 +22,35 @@
 # define LOCK 0
 # define UNLOCK 1
 
-typedef struct s_sim
+typedef struct s_table
 {
-    int n_philo;
-    int n_forks;
-    int argc;
-    char **argv;
-}               t_sim;
+    int             n_philo;
+    int             n_forks;
+    int             n_meals;
+    int             t_die;
+    int             t_eat;
+    int             t_sleep;
+    
+    int             argc;
+
+    int long        t_start;
+
+    char            **argv;
+    t_philo         *philos;
+    pthread_mutex_t *forks;
+    pthread_mutex_t thinking;
+    pthread_mutex_t eating;
+}               t_table;
 
 typedef struct s_philo
 {
-    int n_meals;
-    int t_die;
-    int t_eat;
-    int t_sleep;
-    int left_fork;
-    int right_fork;
+    int         status;
+    int         pos;
+    int         n_meals;
+    int         last_meal;
+    int         left_fork;
+    int         right_fork;
+    pthread_t   thread_id;
 }               t_philo;
 
 // utils.c

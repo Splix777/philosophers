@@ -25,6 +25,19 @@ int ft_atoi(char *str)
     return (nbr * sign);
 }
 
+void    check_args(int argc, char **argv)
+{
+    int i;
+
+    i = 1;
+    while (i < argc)
+    {
+        if (!is_num(argv[i]))
+            exit_error("Arguments must be numbers");
+        i++;
+    }
+}
+
 int is_num(char *str)
 {
     int i;
