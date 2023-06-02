@@ -29,16 +29,13 @@ typedef struct s_table
     int             n_meals;
     int             t_die;
     int             t_eat;
-    int             t_sleep;
-    
+    int             t_sleep;    
     int             argc;
-
     int long        t_start;
-
     char            **argv;
     t_philo         *philos;
     pthread_mutex_t *forks;
-    pthread_mutex_t thinking;
+    pthread_mutex_t writing;
     pthread_mutex_t eating;
 }               t_table;
 
@@ -51,6 +48,7 @@ typedef struct s_philo
     int         left_fork;
     int         right_fork;
     pthread_t   thread_id;
+    t_table     *table;
 }               t_philo;
 
 // utils.c
