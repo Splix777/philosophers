@@ -4,10 +4,12 @@ int main(int argc, char **argv)
 {
     t_table   *table;
 
+    table = NULL;
     if (argc != 5 && argc != 6)
         exit_error("Wrong number of arguments");
     check_args(argc, argv);
-    set_table(table, argc, argv);
-    invite_philos(table);
+    table = set_table(argc, argv);
+    table->philos = invite_philos(table);
     start_sim(table);
+    return (0);
 }

@@ -68,61 +68,73 @@ unsigned long   get_time(void)
     unsigned long   time;
 
     gettimeofday(&t, NULL);
-    time = t.tv_sec * 1000 + t.tv_usec / 1000;
+    time = ((t.tv_sec * 1000) + (t.tv_usec / 1000));
     return (time);
 }
 
-void    go_sleep(t_table *table, unsigned long time)
+void    go_sleep(t_philo *philo, unsigned long time)
 {
     unsigned long   start;
 
     start = get_time();
-    while (table->philos->status == ALIVE)
+    while (philo->status == ALIVE)
     {
+        if (philo->table->t_die < get_time())
+        {
+            philo->status = DEAD;
+            print_action(philo, "died\n", UNLOCK);
+            break ;
+        }
         if (get_time() - start >= time)
             break ;
-        usleep(100);
+        usleep(time - 1);
     }
 }
 
-void    is_eating(t_table *table, unsigned long time)
+void    is_eating(t_philo *philo, unsigned long time)
 {
     unsigned long   start;
 
     start = get_time();
-    while (table->philos->status == ALIVE)
+    while (philo->status == ALIVE)
     {
+        if (philo->table->t_die < get_time())
+        {
+            philo->status = DEAD;
+            print_action(philo, "died\n", UNLOCK);
+            break ;
+        }
         if (get_time() - start >= time)
             break ;
-        usleep(100);
+        usleep(time - 1);
     }
 }
 
-void    go_eat(t_table *table)
+void    go_eat(t_philo *philo)
 {
-    pthread_mutex_lock(&table->forks[table->philos->pos]);
-    print_action(table->philos, "has taken a fork\n", UNLOCK);
-    pthread_mutex_lock(&table->forks[table->philos->pos + 1]);
-    print_action(table->philos, "has taken a fork\n", UNLOCK);
-    pthread_mutext_lock(&table->eating);
-    print_action(table->philos, "is eating\n", UNLOCK);
-    table->philos->last_meal = get_time();
-    is_eating(table, table->t_eat);
-    pthread_mutex_unlock(&table->forks[table->philos->pos]);
-    pthread_mutex_unlock(&table->forks[table->philos->pos + 1]);
-    pthread_mutex_unlock(&table->eating);
-    table->philos->n_meals++;
+    pthread_mutex_lock(&philo->table->forks[philo->left_fork]);
+    print_action(philo, "has taken a fork\n", UNLOCK);
+    pthread_mutex_lock(&philo->table->forks[philo->right_fork]);
+    print_action(philo, "has taken a fork\n", UNLOCK);
+    pthread_mutex_lock(&philo->table->eating);
+    print_action(philo, "is eating\n", UNLOCK);
+    is_eating(philo, philo->table->t_eat);
+    philo->last_meal = get_time();
+    philo->table->t_die = get_time() + philo->table->t_die;
+    pthread_mutex_unlock(&philo->table->forks[philo->pos]);
+    pthread_mutex_unlock(&philo->table->forks[philo->pos + 1]);
+    pthread_mutex_unlock(&philo->table->eating);
+    philo->n_meals++;
 }
 
 void    print_action(t_philo *philo, char *str, int status)
 {
     unsigned long   time;
 
-    time = ft_itoa(get_time() - philo->table->t_start);
+    time = get_time() - philo->table->t_start;
     pthread_mutex_lock(&philo->table->writing);
     if (philo->status == ALIVE && philo->n_meals != philo->table->n_meals)
         printf("%lu %d %s", time, philo->pos, str);
     if (status == UNLOCK)
         pthread_mutex_unlock(&philo->table->writing);
-    free(time);
 }

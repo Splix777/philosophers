@@ -22,42 +22,58 @@
 # define LOCK 0
 # define UNLOCK 1
 
+typedef struct s_table t_table;
+
+typedef struct s_philo
+{
+    int             status;
+    int             pos;
+    int             n_meals;
+    int             last_meal;
+    int             left_fork;
+    int             right_fork;
+    pthread_t       thread_id;
+    t_table         *table;
+}               t_philo;
+
 typedef struct s_table
 {
     int             n_philo;
     int             n_forks;
     int             n_meals;
-    int             t_die;
+    unsigned long   t_die;
     int             t_eat;
     int             t_sleep;    
     int             argc;
     int long        t_start;
     char            **argv;
-    t_philo         *philos;
+    t_philo         **philos;
     pthread_mutex_t *forks;
     pthread_mutex_t writing;
     pthread_mutex_t eating;
 }               t_table;
 
-typedef struct s_philo
-{
-    int         status;
-    int         pos;
-    int         n_meals;
-    int         last_meal;
-    int         left_fork;
-    int         right_fork;
-    pthread_t   thread_id;
-    t_table     *table;
-}               t_philo;
-
 // utils.c
-int     ft_atoi(char *str);
-int     is_num(char *str);
+void            print_action(t_philo *philo, char *str, int status);
+void            go_eat(t_philo *philo);
+void            is_eating(t_philo *philo, unsigned long time);
+void            go_sleep(t_philo *philo, unsigned long time);
+void            check_args(int argc, char **argv);
+int             ft_atoi(char *str);
+int             is_num(char *str);
+int             ft_strlen(char *str);
+unsigned long   get_time(void);
 // errors_and_exit.c
-void    exit_error(char *str);
-// main.c
-
-
+void            exit_error(char *str);
+void            free_philos(t_table *table, int i);
+void            exit_error_free(char *str, t_table *table);
+// set_table.c
+t_philo         **init_philos(t_philo **philos, t_table *table);
+t_philo         **invite_philos(t_table *table);
+t_table         *set_table(int argc, char **argv);
+int             init_mutex(t_table *table);
+// start_sim.c
+void            *routine(void *arg);
+void            start_sim(t_table *table);
 
 #endif
