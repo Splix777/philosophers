@@ -48,6 +48,7 @@ typedef struct s_table
     int long        t_start;
     char            **argv;
     t_philo         *philos;
+    pthread_t       monitor;
     pthread_mutex_t *forks;
     pthread_mutex_t writing;
     pthread_mutex_t eating;
@@ -63,7 +64,7 @@ int             ft_atoi(char *str);
 int             is_num(char *str);
 int             ft_strlen(char *str);
 unsigned long   get_time(void);
-void            monitor_philos(t_table *table);
+
 void            end_sim(t_table *table);
 // errors_and_exit.c
 void            exit_error(char *str);
@@ -77,5 +78,6 @@ void             init_mutex(t_table *table);
 // start_sim.c
 void            *routine(void *arg);
 void            start_sim(t_table *table);
+void            *monitor_philos(t_table *table);
 
 #endif
