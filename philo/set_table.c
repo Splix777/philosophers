@@ -1,70 +1,51 @@
 #include "philosophers.h"
 
-t_philo **init_philos(t_philo **philos, t_table *table)
+void    init_philos(t_table *table)
 {
     int i;
 
     i = 0;
     while (i < table->n_philo)
     {
-        philos[i] = malloc(sizeof(t_philo));
-        if (!philos[i])
-        {
-            free_philos(table, i);
-            return (NULL);
-        }
-        philos[i]->status = ALIVE;
-        philos[i]->pos = i + 1;
-        philos[i]->n_meals = 0;
-        philos[i]->last_meal = 0;
-        philos[i]->left_fork = i;
-        philos[i]->right_fork = (i + 1) % table->n_forks;
-        //philos[i]->thread_id = i;
-        philos[i]->table = table;
+        table->philos[i].status = ALIVE;
+        table->philos[i].pos = i + 1;
+        table->philos[i].n_meals = 0;
+        table->philos[i].last_meal = get_time();
+        table->philos[i].left_fork = i;
+        table->philos[i].right_fork = (i + 1) % table->n_forks;
+        table->philos[i].thread_id = i;
+        table->philos[i].table = table;
         i++;
     }
-    return (philos);
 }
 
-int init_mutex(t_table *table)
+void init_mutex(t_table *table)
 {
     int i;
 
     i = 0;
     while (i < table->n_forks)
     {
-        if (pthread_mutex_init(&table->forks[i], NULL))
-            return (0);
+        pthread_mutex_init(&table->forks[i], NULL);
         i++;
     }
-    if (pthread_mutex_init(&table->writing, NULL))
-        return (0);
-    if (pthread_mutex_init(&table->eating, NULL))
-        return (0);
-    return (1);
+    pthread_mutex_init(&table->writing, NULL);
+    pthread_mutex_init(&table->eating, NULL);
 }
 
-t_philo **invite_philos(t_table *table)
+void    invite_philos(t_table *table)
 {
-    t_philo **philos;
-
-    philos = malloc(sizeof(t_philo) * table->n_philo);
-    if (!philos)
-        exit_error("Philos Malloc error");
-    memset(philos, 0, sizeof(t_philo) * table->n_philo);
-    philos = init_philos(philos, table);
-    if (!philos)
+    table->philos = malloc(sizeof(t_philo) * table->n_philo);
+    if (!table->philos)
         exit_error("Philos Malloc error");
     table->forks = malloc(sizeof(pthread_mutex_t) * table->n_forks);
     if (!table->forks)
     {
-        free_philos(table, table->n_philo - 1);
+        free(table->philos);
         exit_error("Forks Malloc error");
     }
-    memset(table->forks, 0, sizeof(pthread_mutex_t) * table->n_forks);
-    if (!init_mutex(table))
-        exit_error_free("Mutex init error", table);
-    return (philos);
+    init_philos(table);
+    init_mutex(table);
 }
 
 t_table    *set_table(int argc, char **argv)
@@ -87,10 +68,11 @@ t_table    *set_table(int argc, char **argv)
     table->argv = argv;
     table->t_start = get_time();
     if (table->t_die <= 0 || table->t_eat <= 0 || table->t_sleep <= 0
-        || table->n_meals <= 0 || table->n_philo <= 1)
+        || table->n_meals == 0 || table->n_philo <= 1)
         {
             free(table);
             exit_error("Arguments must be more than 0");
         }
+    invite_philos(table);
     return (table);
 }

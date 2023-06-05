@@ -79,12 +79,6 @@ void    go_sleep(t_philo *philo, unsigned long time)
     start = get_time();
     while (philo->status == ALIVE)
     {
-        if (philo->table->t_die < get_time())
-        {
-            philo->status = DEAD;
-            print_action(philo, "died\n", UNLOCK);
-            break ;
-        }
         if (get_time() - start >= time)
             break ;
         usleep(time - 1);
@@ -98,12 +92,6 @@ void    is_eating(t_philo *philo, unsigned long time)
     start = get_time();
     while (philo->status == ALIVE)
     {
-        if (philo->table->t_die < get_time())
-        {
-            philo->status = DEAD;
-            print_action(philo, "died\n", UNLOCK);
-            break ;
-        }
         if (get_time() - start >= time)
             break ;
         usleep(time - 1);
@@ -118,12 +106,11 @@ void    go_eat(t_philo *philo)
     print_action(philo, "has taken a fork\n", UNLOCK);
     pthread_mutex_lock(&philo->table->eating);
     print_action(philo, "is eating\n", UNLOCK);
-    is_eating(philo, philo->table->t_eat);
     philo->last_meal = get_time();
-    philo->table->t_die = get_time() + philo->table->t_die;
-    pthread_mutex_unlock(&philo->table->forks[philo->pos]);
-    pthread_mutex_unlock(&philo->table->forks[philo->pos + 1]);
+    is_eating(philo, philo->table->t_eat);
     pthread_mutex_unlock(&philo->table->eating);
+    pthread_mutex_unlock(&philo->table->forks[philo->left_fork]);
+    pthread_mutex_unlock(&philo->table->forks[philo->right_fork]);
     philo->n_meals++;
 }
 
@@ -137,4 +124,53 @@ void    print_action(t_philo *philo, char *str, int status)
         printf("%lu %d %s", time, philo->pos, str);
     if (status == UNLOCK)
         pthread_mutex_unlock(&philo->table->writing);
+}
+
+void    monitor_philos(t_table *table)
+{
+    int i;
+    int total_dead;
+
+    total_dead = 0;
+    while (1)
+    {
+        i = 0;
+        while (i < table->n_philo)
+        {
+            pthread_mutex_lock(&table->eating);
+            if (get_time() - table->philos[i].last_meal >= table->t_die)
+            {
+                table->philos[i].status = DEAD;
+                if (table->philos[i].status == DEAD)
+                    total_dead++;
+                print_action(&table->philos[i], "died\n", UNLOCK);
+            }
+            pthread_mutex_unlock(&table->eating);
+            i++;
+        }
+        if (total_dead == table->n_philo)
+            break ;
+    }
+}
+
+void    end_sim(t_table *table)
+{
+    int i;
+
+    i = 0;
+    while (i < table->n_philo)
+    {
+        pthread_join(table->philos[i].thread_id, NULL);
+        i++;
+    }
+    pthread_mutex_destroy(&table->writing);
+    pthread_mutex_destroy(&table->eating);
+    i = 0;
+    while (i < table->n_philo)
+    {
+        pthread_mutex_destroy(&table->forks[i]);
+        i++;
+    }
+    free(table->forks);
+    free(table->philos);
 }

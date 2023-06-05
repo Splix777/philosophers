@@ -42,12 +42,12 @@ typedef struct s_table
     int             n_forks;
     int             n_meals;
     unsigned long   t_die;
-    int             t_eat;
-    int             t_sleep;    
+    unsigned long   t_eat;
+    unsigned long   t_sleep;    
     int             argc;
     int long        t_start;
     char            **argv;
-    t_philo         **philos;
+    t_philo         *philos;
     pthread_mutex_t *forks;
     pthread_mutex_t writing;
     pthread_mutex_t eating;
@@ -63,15 +63,17 @@ int             ft_atoi(char *str);
 int             is_num(char *str);
 int             ft_strlen(char *str);
 unsigned long   get_time(void);
+void            monitor_philos(t_table *table);
+void            end_sim(t_table *table);
 // errors_and_exit.c
 void            exit_error(char *str);
 void            free_philos(t_table *table, int i);
 void            exit_error_free(char *str, t_table *table);
 // set_table.c
-t_philo         **init_philos(t_philo **philos, t_table *table);
-t_philo         **invite_philos(t_table *table);
+void            init_philos(t_table *table);
+void            invite_philos(t_table *table);
 t_table         *set_table(int argc, char **argv);
-int             init_mutex(t_table *table);
+void             init_mutex(t_table *table);
 // start_sim.c
 void            *routine(void *arg);
 void            start_sim(t_table *table);

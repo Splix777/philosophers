@@ -9,7 +9,7 @@ int main(int argc, char **argv)
         exit_error("Wrong number of arguments");
     check_args(argc, argv);
     table = set_table(argc, argv);
-    table->philos = invite_philos(table);
     start_sim(table);
+    end_sim(table);
     return (0);
 }
