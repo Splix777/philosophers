@@ -94,7 +94,7 @@ void    is_eating(t_philo *philo, unsigned long time)
     {
         if (get_time() - start >= time)
             break ;
-        usleep(time - 1);
+        usleep(time);
     }
 }
 
@@ -108,10 +108,10 @@ void    go_eat(t_philo *philo)
     print_action(philo, "is eating\n", UNLOCK);
     philo->last_meal = get_time();
     is_eating(philo, philo->table->t_eat);
+    philo->n_meals++;
     pthread_mutex_unlock(&philo->table->eating);
     pthread_mutex_unlock(&philo->table->forks[philo->left_fork]);
     pthread_mutex_unlock(&philo->table->forks[philo->right_fork]);
-    philo->n_meals++;
 }
 
 void    print_action(t_philo *philo, char *str, int status)
@@ -120,7 +120,7 @@ void    print_action(t_philo *philo, char *str, int status)
 
     time = get_time() - philo->table->t_start;
     pthread_mutex_lock(&philo->table->writing);
-    if (philo->status == ALIVE && philo->n_meals != philo->table->n_meals)
+    if (philo->status == ALIVE && philo->table->stop == 0)
         printf("%lu %d %s", time, philo->pos, str);
     if (status == UNLOCK)
         pthread_mutex_unlock(&philo->table->writing);
@@ -146,4 +146,6 @@ void    end_sim(t_table *table)
     }
     free(table->forks);
     free(table->philos);
+    free(table);
+    exit(0);
 }

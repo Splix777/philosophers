@@ -11,5 +11,6 @@ int main(int argc, char **argv)
     table = set_table(argc, argv);
     start_sim(table);
     end_sim(table);
+    printf("Simulation ended\n");
     return (0);
 }

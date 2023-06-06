@@ -38,17 +38,17 @@ typedef struct s_philo
 
 typedef struct s_table
 {
+    unsigned long   t_die;
+    unsigned long   t_eat;
+    unsigned long   t_sleep;
+    unsigned long   t_start;
     int             n_philo;
     int             n_forks;
     int             n_meals;
-    unsigned long   t_die;
-    unsigned long   t_eat;
-    unsigned long   t_sleep;    
     int             argc;
-    int long        t_start;
+    int             stop;
     char            **argv;
     t_philo         *philos;
-    pthread_t       monitor;
     pthread_mutex_t *forks;
     pthread_mutex_t writing;
     pthread_mutex_t eating;
@@ -60,12 +60,11 @@ void            go_eat(t_philo *philo);
 void            is_eating(t_philo *philo, unsigned long time);
 void            go_sleep(t_philo *philo, unsigned long time);
 void            check_args(int argc, char **argv);
+void            end_sim(t_table *table);
 int             ft_atoi(char *str);
 int             is_num(char *str);
 int             ft_strlen(char *str);
 unsigned long   get_time(void);
-
-void            end_sim(t_table *table);
 // errors_and_exit.c
 void            exit_error(char *str);
 void            free_philos(t_table *table, int i);
@@ -73,11 +72,11 @@ void            exit_error_free(char *str, t_table *table);
 // set_table.c
 void            init_philos(t_table *table);
 void            invite_philos(t_table *table);
-t_table         *set_table(int argc, char **argv);
 void             init_mutex(t_table *table);
+t_table         *set_table(int argc, char **argv);
 // start_sim.c
 void            *routine(void *arg);
 void            start_sim(t_table *table);
-void            *monitor_philos(t_table *table);
+void            monitor_philos(t_table *table);
 
 #endif

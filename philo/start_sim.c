@@ -6,8 +6,8 @@ void    *routine(void *arg)
 
     philo = (t_philo *)arg;
     if (!(philo->pos % 2))
-        go_sleep(philo, philo->table->t_eat);
-    while (philo->status == ALIVE && philo->n_meals != philo->table->n_meals)
+        go_sleep(philo, philo->table->t_eat / 2);
+    while (philo->status == ALIVE && philo->table->stop == 0)
     {
         go_eat(philo);
         print_action(philo, "is sleeping\n", UNLOCK);
@@ -17,30 +17,25 @@ void    *routine(void *arg)
     return (NULL);
 }
 
-void    *monitor_philos(t_table *table)
+void    monitor_philos(t_table *table)
 {
     int i;
-    int total_dead;
 
-    total_dead = 0;
-    while (1)
+    while (table->stop == 0)
     {
         i = 0;
         while (i < table->n_philo)
         {
             pthread_mutex_lock(&table->eating);
-            if (get_time() - table->philos[i].last_meal >= table->t_die)
+            if ((get_time() - table->philos[i].last_meal) >= table->t_die)
             {
-                table->philos[i].status = DEAD;
-                if (table->philos[i].status == DEAD)
-                    total_dead++;
                 print_action(&table->philos[i], "died\n", UNLOCK);
+                table->stop = 1;
+                break ;
             }
             pthread_mutex_unlock(&table->eating);
             i++;
         }
-        if (total_dead == table->n_philo)
-            break ;
     }
 }
 
@@ -56,6 +51,5 @@ void    start_sim(t_table *table)
             exit_error_free("Error: pthread_create\n", table);
         i++;
     }
-    if (pthread_create(&table->monitor, NULL, &monitor_philos, table))
-        exit_error_free("Error: pthread_create\n", table);
+    monitor_philos(table);
 }

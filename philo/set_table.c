@@ -64,9 +64,9 @@ t_table    *set_table(int argc, char **argv)
     else
         table->n_meals = -1;
     table->n_forks = table->n_philo;
+    table->stop = 0;
     table->argc = argc;
     table->argv = argv;
-    table->t_start = get_time();
     if (table->t_die <= 0 || table->t_eat <= 0 || table->t_sleep <= 0
         || table->n_meals == 0 || table->n_philo <= 1)
         {
