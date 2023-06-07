@@ -75,26 +75,24 @@ unsigned long   get_time(void)
 void    go_sleep(t_philo *philo, unsigned long time)
 {
     unsigned long   start;
-
+    
     start = get_time();
     while (philo->status == ALIVE)
     {
-        if (get_time() - start >= time)
+        if ((get_time() - start) >= time)
             break ;
-        usleep(time - 1);
+        usleep(time);
     }
 }
 
 void    is_eating(t_philo *philo, unsigned long time)
 {
     unsigned long   start;
-    unsigned long   end;
     
     start = get_time();
-    end = start + time;
-    while (philo->status == ALIVE && get_time() < end)
+    while (philo->status == ALIVE)
     {
-        if (get_time() - start >= time)
+        if ((get_time() - start) >= time)
             break ;
         usleep(time);
     }
@@ -103,12 +101,12 @@ void    is_eating(t_philo *philo, unsigned long time)
 void    go_eat(t_philo *philo)
 {
     pthread_mutex_lock(&philo->table->forks[philo->left_fork]);
-    print_action(philo, "has taken a fork\n", UNLOCK);
+    print_action(philo, "has taken a fork\n");
     pthread_mutex_lock(&philo->table->forks[philo->right_fork]);
-    print_action(philo, "has taken a fork\n", UNLOCK);
+    print_action(philo, "has taken a fork\n");
     pthread_mutex_lock(&philo->table->eating);
+    print_action(philo, "is eating\n");
     philo->last_meal = get_time();
-    print_action(philo, "is eating\n", UNLOCK);
     pthread_mutex_unlock(&philo->table->eating);
     is_eating(philo, philo->table->t_eat);
     philo->n_meals++;
@@ -116,7 +114,7 @@ void    go_eat(t_philo *philo)
     pthread_mutex_unlock(&philo->table->forks[philo->right_fork]);
 }
 
-void    print_action(t_philo *philo, char *str, int status)
+void    print_action(t_philo *philo, char *str)
 {
     unsigned long   time;
 
@@ -125,20 +123,18 @@ void    print_action(t_philo *philo, char *str, int status)
     if (philo->status == ALIVE && philo->table->stop == 0)
     {
         printf("%lu %d ", time, philo->pos);
-
         if (strcmp(str, "is eating\n") == 0)
-            printf(COLOR_GREEN);    // Set color to green for "is eating"
+            printf(COLOR_GREEN);
         else if (strcmp(str, "is sleeping\n") == 0)
-            printf(COLOR_BLUE);     // Set color to blue for "is sleeping"
+            printf(COLOR_BLUE);
         else if (strcmp(str, "is thinking\n") == 0)
-            printf(COLOR_YELLOW);   // Set color to yellow for "is thinking"
+            printf(COLOR_YELLOW);
         else if (strcmp(str, "died\n") == 0)
-            printf(COLOR_RED);      // Set color to red for "died"
+            printf(COLOR_RED);
         printf("%s", str);
-        printf(COLOR_RESET);         // Reset color to default
+        printf(COLOR_RESET);
     }
-    if (status == UNLOCK)
-        pthread_mutex_unlock(&philo->table->writing);
+    pthread_mutex_unlock(&philo->table->writing);
 }
 
 void    end_sim(t_table *table)

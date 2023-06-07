@@ -6,13 +6,13 @@ void    *routine(void *arg)
 
     philo = (t_philo *)arg;
     if (!(philo->pos % 2))
-        go_sleep(philo, philo->table->t_sleep / 2);
+        go_sleep(philo, philo->pos);
     while (philo->status == ALIVE && !(philo->table->stop))
     {
         go_eat(philo);
-        print_action(philo, "is sleeping\n", UNLOCK);
+        print_action(philo, "is sleeping\n");
         go_sleep(philo, philo->table->t_sleep);
-        print_action(philo, "is thinking\n", UNLOCK);
+        print_action(philo, "is thinking\n");
     }
     return (NULL);
 }
@@ -31,7 +31,7 @@ void    monitor_philos(t_table *table)
             pthread_mutex_lock(&table->eating);
             if ((get_time() - table->philos[i].last_meal) >= table->t_die)
             {
-                print_action(&table->philos[i], "died\n", UNLOCK);
+                print_action(&table->philos[i], "died\n");
                 table->philos[i].status = DEAD;
                 table->stop = 1;
             }
