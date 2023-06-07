@@ -15,12 +15,16 @@
 
 # define DEAD 0
 # define ALIVE 1
-# define EATING 2
-# define SLEEPING 3
-# define THINKING 4
+# define FULL 2
 
 # define LOCK 0
 # define UNLOCK 1
+
+#define COLOR_RED "\x1b[31m"
+#define COLOR_GREEN "\x1b[32m"
+#define COLOR_BLUE "\x1b[34m"
+#define COLOR_YELLOW "\x1b[33m"
+#define COLOR_RESET "\x1b[0m"
 
 typedef struct s_table t_table;
 
@@ -28,10 +32,10 @@ typedef struct s_philo
 {
     int             status;
     int             pos;
-    int             n_meals;
-    int             last_meal;
+    int             n_meals;    
     int             left_fork;
     int             right_fork;
+    unsigned long   last_meal;
     pthread_t       thread_id;
     t_table         *table;
 }               t_philo;

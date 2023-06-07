@@ -6,8 +6,8 @@ void    *routine(void *arg)
 
     philo = (t_philo *)arg;
     if (!(philo->pos % 2))
-        go_sleep(philo, philo->table->t_eat / 2);
-    while (philo->status == ALIVE && philo->table->stop == 0)
+        go_sleep(philo, philo->table->t_sleep / 2);
+    while (philo->status == ALIVE && !(philo->table->stop))
     {
         go_eat(philo);
         print_action(philo, "is sleeping\n", UNLOCK);
@@ -20,21 +20,33 @@ void    *routine(void *arg)
 void    monitor_philos(t_table *table)
 {
     int i;
+    int full;
 
-    while (table->stop == 0)
+    while (!table->stop)
     {
         i = 0;
+        full = 0;
         while (i < table->n_philo)
         {
             pthread_mutex_lock(&table->eating);
             if ((get_time() - table->philos[i].last_meal) >= table->t_die)
             {
                 print_action(&table->philos[i], "died\n", UNLOCK);
+                table->philos[i].status = DEAD;
                 table->stop = 1;
-                break ;
             }
             pthread_mutex_unlock(&table->eating);
+            if (table->philos[i].n_meals == table->n_meals)
+            {
+                table->philos[i].status = FULL;
+                full++;
+            }
             i++;
+        }
+        if (full == table->n_philo)
+        {
+            printf("All philosophers have eaten %d times\n", table->n_meals);
+            table->stop = 1;
         }
     }
 }
