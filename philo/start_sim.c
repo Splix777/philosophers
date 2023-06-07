@@ -19,8 +19,8 @@ void    *routine(void *arg)
 
 void    monitor_philos(t_table *table)
 {
-    int i;
-    int full;
+	int i;
+	int full;
 
     while (!table->stop)
     {
