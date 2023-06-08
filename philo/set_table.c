@@ -32,7 +32,7 @@ void init_mutex(t_table *table)
     }
     if (pthread_mutex_init(&table->writing, NULL) != 0)
         exit_error_free(ERROR_MUTEX, table);
-    if (pthread_mutex_init(&table->eating, NULL) != 0)
+    if (pthread_mutex_init(&table->serving, NULL) != 0)
         exit_error_free(ERROR_MUTEX, table);
 }
 

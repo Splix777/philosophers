@@ -18,7 +18,7 @@ void    exit_error_free(char *str, t_table *table)
         i++;
     }
     pthread_mutex_destroy(&table->writing);
-    pthread_mutex_destroy(&table->eating);
+    pthread_mutex_destroy(&table->serving);
     free(table->forks);
     free(table->philos);
     free(table);

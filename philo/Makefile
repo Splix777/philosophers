@@ -46,6 +46,9 @@ re: fclean all
 .PHONY: all clean fclean re
 
 test: $(NAME)
-	@./$(NAME) 4 415 200 200 200
+	@./$(NAME) 4 410 200 200 10
+	@./$(NAME) 4 310 150 150 10
+	@./$(NAME) 4 410 200 200
+	@./$(NAME) 4 310 150 150
 	@echo "$(GREEN)$(CHECKMARK) $(NAME) test passed.$(RESET)"
 	

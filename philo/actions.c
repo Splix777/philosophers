@@ -6,10 +6,10 @@ void    go_eat(t_philo *philo, t_table *table)
     print_action(philo, table, "has taken a fork\n");
     pthread_mutex_lock(&table->forks[philo->right_fork]);
     print_action(philo, table, "has taken a fork\n");
-    pthread_mutex_lock(&table->eating);
+    pthread_mutex_lock(&table->serving);
     print_action(philo, table, "is eating\n");
     philo->last_meal = get_time();
-    pthread_mutex_unlock(&table->eating);
+    pthread_mutex_unlock(&table->serving);
     is_eating(philo, table->t_eat);
     philo->n_meals++;
     pthread_mutex_unlock(&table->forks[philo->left_fork]);
