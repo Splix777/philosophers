@@ -55,7 +55,7 @@ void    start_sim(t_table *table)
 
     i = 0;
     table->t_start = get_time();
-    while (i < table->n_philo)
+    while (i < table->n_philo && table->n_philo > 1)
     {
         if (pthread_create(&table->philos[i].thread_id, NULL, &routine,
             &table->philos[i]))
