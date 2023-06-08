@@ -26,23 +26,26 @@ void init_mutex(t_table *table)
     i = 0;
     while (i < table->n_forks)
     {
-        pthread_mutex_init(&table->forks[i], NULL);
+        if (pthread_mutex_init(&table->forks[i], NULL) != 0)
+            exit_error_free(ERROR_MUTEX, table);
         i++;
     }
-    pthread_mutex_init(&table->writing, NULL);
-    pthread_mutex_init(&table->eating, NULL);
+    if (pthread_mutex_init(&table->writing, NULL) != 0)
+        exit_error_free(ERROR_MUTEX, table);
+    if (pthread_mutex_init(&table->eating, NULL) != 0)
+        exit_error_free(ERROR_MUTEX, table);
 }
 
 void    invite_philos(t_table *table)
 {
     table->philos = malloc(sizeof(t_philo) * table->n_philo);
     if (!table->philos)
-        exit_error("Philos Malloc error");
+        exit_error(ERROR_MALLOC);
     table->forks = malloc(sizeof(pthread_mutex_t) * table->n_forks);
     if (!table->forks)
     {
         free(table->philos);
-        exit_error("Forks Malloc error");
+        exit_error(ERROR_MALLOC);
     }
     init_philos(table);
     init_mutex(table);
@@ -54,7 +57,7 @@ t_table    *set_table(int argc, char **argv)
 
     table = malloc(sizeof(t_table));
     if (!table)
-        exit_error("Table Malloc error");
+        exit_error(ERROR_MALLOC);
     table->n_philo = ft_atoi(argv[1]);
     table->t_die = ft_atoi(argv[2]);
     table->t_eat = ft_atoi(argv[3]);
@@ -68,10 +71,10 @@ t_table    *set_table(int argc, char **argv)
     table->argc = argc;
     table->argv = argv;
     if (table->t_die <= 0 || table->t_eat <= 0 || table->t_sleep <= 0
-        || table->n_meals == 0 || table->n_philo <= 1)
+        || table->n_meals == 0 || table->n_philo < 1)
         {
             free(table);
-            exit_error("Arguments must be more than 0");
+            exit_error(ERROR_FORMAT);
         }
     invite_philos(table);
     return (table);
