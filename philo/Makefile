@@ -20,8 +20,8 @@ OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
 GREEN = \033[0;32m
 YELLOW = \033[0;33m
 RED = \033[0;31m
-CHECKMARK = ✔
 RESET = \033[0m
+CHECKMARK = ✔
 
 all: $(NAME)
 

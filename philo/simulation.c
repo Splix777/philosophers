@@ -8,7 +8,7 @@ void	*routine(void *arg)
 	philo = (t_philo *)arg;
 	table = philo->table;
 	if (!(philo->pos % 2))
-		go_sleep(philo, 10);
+	    go_sleep(philo, table->t_eat - 1);
     while (philo->status == ALIVE && !(table->stop))
     {
         go_eat(philo, table);
@@ -30,7 +30,7 @@ void	monitor_philos(t_table *table, int i)
         while (i < table->n_philo)
         {
             pthread_mutex_lock(&table->serving);
-            if ((get_time() - table->philos[i].last_meal) > table->t_die)
+            if ((get_time() - table->philos[i].last_meal) > (table->t_die))
             {
                 print_action(&table->philos[i], table, "died\n");
                 table->stop = 1;
@@ -73,6 +73,7 @@ void	end_sim(t_table *table, int i, int status)
     {
         printf(COLOR_MAGENTA);
         printf("All philosophers have eaten %d times!\n", table->n_meals);
+        printf(COLOR_RESET);
     }
     while (i >= 0)
     {
