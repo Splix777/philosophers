@@ -1,8 +1,8 @@
 #include "philosophers.h"
 
-void    check_args(int argc, char **argv)
+void	check_args(int argc, char **argv)
 {
-    int i;
+    int	i;
 
     i = 1;
     while (i < argc)
@@ -13,9 +13,9 @@ void    check_args(int argc, char **argv)
     }
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
-    t_table   *table;
+    t_table	*table;
 
     table = NULL;
     if (argc != 5 && argc != 6)

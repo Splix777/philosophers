@@ -48,7 +48,7 @@ re: fclean all
 test: $(NAME)
 	@./$(NAME) 4 410 200 200 10
 	@./$(NAME) 4 310 150 150 10
-	@./$(NAME) 4 410 200 200
-	@./$(NAME) 4 310 150 150
+	@./$(NAME) 4 410 200 200 200
+	@./$(NAME) 4 310 150 150 200
 	@echo "$(GREEN)$(CHECKMARK) $(NAME) test passed.$(RESET)"
 	

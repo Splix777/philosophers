@@ -1,6 +1,6 @@
 #include "philosophers.h"
 
-void    go_eat(t_philo *philo, t_table *table)
+void	go_eat(t_philo *philo, t_table *table)
 {
     pthread_mutex_lock(&table->forks[philo->left_fork]);
     print_action(philo, table, "has taken a fork\n");
@@ -16,9 +16,9 @@ void    go_eat(t_philo *philo, t_table *table)
     pthread_mutex_unlock(&table->forks[philo->right_fork]);
 }
 
-void    print_action(t_philo *philo, t_table *table, char *str)
+void	print_action(t_philo *philo, t_table *table, char *str)
 {
-    unsigned long   time;
+    unsigned long	time;
 
     time = get_time() - table->t_start;
     pthread_mutex_lock(&table->writing);
@@ -39,9 +39,9 @@ void    print_action(t_philo *philo, t_table *table, char *str)
     pthread_mutex_unlock(&table->writing);
 }
 
-void    go_sleep(t_philo *philo, unsigned long time)
+void	go_sleep(t_philo *philo, unsigned long time)
 {
-    unsigned long   start;
+    unsigned long	start;
     
     start = get_time();
     while (philo->status == ALIVE)
@@ -52,9 +52,9 @@ void    go_sleep(t_philo *philo, unsigned long time)
     }
 }
 
-void    is_eating(t_philo *philo, unsigned long time)
+void	is_eating(t_philo *philo, unsigned long time)
 {
-    unsigned long   start;
+    unsigned long	start;
     
     start = get_time();
     while (philo->status == ALIVE)
@@ -65,9 +65,9 @@ void    is_eating(t_philo *philo, unsigned long time)
     }
 }
 
-unsigned long   get_time(void)
+unsigned long	get_time(void)
 {
-    struct timeval  t;
+    struct timeval	t;
 
     gettimeofday(&t, NULL);
     return ((t.tv_sec * 1000) + (t.tv_usec / 1000));

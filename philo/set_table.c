@@ -1,8 +1,8 @@
 #include "philosophers.h"
 
-void    init_philos(t_table *table)
+void	init_philos(t_table *table)
 {
-    int i;
+    int	i;
 
     i = 0;
     while (i < table->n_philo)
@@ -19,9 +19,9 @@ void    init_philos(t_table *table)
     }
 }
 
-void init_mutex(t_table *table)
+void	init_mutex(t_table *table)
 {
-    int i;
+    int	i;
 
     i = 0;
     while (i < table->n_forks)
@@ -36,7 +36,7 @@ void init_mutex(t_table *table)
         exit_error_free(ERROR_MUTEX, table);
 }
 
-void    invite_philos(t_table *table)
+void	invite_philos(t_table *table)
 {
     table->philos = malloc(sizeof(t_philo) * table->n_philo);
     if (!table->philos)
@@ -51,9 +51,9 @@ void    invite_philos(t_table *table)
     init_mutex(table);
 }
 
-t_table    *set_table(int argc, char **argv)
+t_table	*set_table(int argc, char **argv)
 {
-    t_table *table;
+    t_table	*table;
 
     table = malloc(sizeof(t_table));
     if (!table)

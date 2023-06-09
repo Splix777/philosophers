@@ -1,14 +1,14 @@
 #include "philosophers.h"
 
-void    *routine(void *arg)
+void	*routine(void *arg)
 {
-    t_philo *philo;
-    t_table *table;
+	t_philo	*philo;
+	t_table	*table;
 
-    philo = (t_philo *)arg;
-    table = philo->table;
-    if (!(philo->pos % 2))
-        go_sleep(philo, 10);
+	philo = (t_philo *)arg;
+	table = philo->table;
+	if (!(philo->pos % 2))
+		go_sleep(philo, 10);
     while (philo->status == ALIVE && !(table->stop))
     {
         go_eat(philo, table);
@@ -19,15 +19,15 @@ void    *routine(void *arg)
     return (NULL);
 }
 
-void    monitor_philos(t_table *table, int i)
+void	monitor_philos(t_table *table, int i)
 {
-	int full;
+	int	full;
 
     while (!table->stop)
     {
-        i = -1;
+        i = 0;
         full = 0;
-        while (++i < table->n_philo)
+        while (i < table->n_philo)
         {
             pthread_mutex_lock(&table->serving);
             if ((get_time() - table->philos[i].last_meal) > table->t_die)
@@ -35,22 +35,22 @@ void    monitor_philos(t_table *table, int i)
                 print_action(&table->philos[i], table, "died\n");
                 table->stop = 1;
             }
+            pthread_mutex_unlock(&table->serving);
             if (table->philos[i].n_meals == table->n_meals)
             {
                 table->philos[i].status = FULL;
                 full++;
             }
-            pthread_mutex_unlock(&table->serving);
+            i++;
         }
         if (full == table->n_philo)
             table->stop = 2;
-        usleep(8000);
     }
 }
 
-void    start_sim(t_table *table)
+void	start_sim(t_table *table)
 {
-    int             i;
+    int	i;
 
     i = 0;
     table->t_start = get_time();
@@ -67,7 +67,7 @@ void    start_sim(t_table *table)
     monitor_philos(table, i);
 }
 
-void    end_sim(t_table *table, int i, int status)
+void	end_sim(t_table *table, int i, int status)
 {
     if (status == SUCCESS && table->stop == 2)
     {
