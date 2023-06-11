@@ -1,6 +1,6 @@
 #include "philosophers.h"
 
-int ft_atoi(const char *str)
+unsigned long ft_atoi(const char *str)
 {
     unsigned long	nbr;
     int				i;
@@ -14,6 +14,8 @@ int ft_atoi(const char *str)
         nbr = nbr * 10 + (str[i] - '0');
         i++;
     }
+    if (nbr > 2147483647)
+        return (0);
     return (nbr);
 }
 

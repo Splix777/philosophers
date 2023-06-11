@@ -8,7 +8,7 @@ void	*routine(void *arg)
 	philo = (t_philo *)arg;
 	table = philo->table;
 	if (!(philo->pos % 2))
-	    go_sleep(philo, table->t_eat - 1);
+	    go_sleep(philo, table->t_eat);
     while (philo->status == ALIVE && !(table->stop))
     {
         go_eat(philo, table);
@@ -21,30 +21,28 @@ void	*routine(void *arg)
 
 void	monitor_philos(t_table *table, int i)
 {
-	int	full;
+    int full;
 
+    full = 0;
     while (!table->stop)
     {
-        i = 0;
-        full = 0;
-        while (i < table->n_philo)
+        if (table->philos[i].n_meals == table->n_meals
+            && table->philos[i].status == ALIVE)
         {
-            pthread_mutex_lock(&table->serving);
-            if ((get_time() - table->philos[i].last_meal) > (table->t_die))
-            {
-                print_action(&table->philos[i], table, "died\n");
-                table->stop = 1;
-            }
-            pthread_mutex_unlock(&table->serving);
-            if (table->philos[i].n_meals == table->n_meals)
-            {
-                table->philos[i].status = FULL;
-                full++;
-            }
-            i++;
+            table->philos[i].status = FULL;
+            full++;
         }
         if (full == table->n_philo)
             table->stop = 2;
+        pthread_mutex_lock(&table->serving);
+        if ((get_time() - table->philos[i].last_meal) > table->t_die)
+        {
+            print_action(&table->philos[i], table, "died\n");
+            table->stop = 1;
+        }
+        pthread_mutex_unlock(&table->serving);
+        i = (i + 1) % table->n_philo;
+        usleep(1000);
     }
 }
 
@@ -64,6 +62,7 @@ void	start_sim(t_table *table)
         }
         i++;
     }
+    i = 0;
     monitor_philos(table, i);
 }
 

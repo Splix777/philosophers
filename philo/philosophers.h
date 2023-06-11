@@ -68,9 +68,9 @@ typedef struct	s_table
 void	check_args(int argc, char **argv);
 // errors_and_exits.c
 void	exit_error(char *str);
-void	exit_error_free(char *str, t_table *table);
+void	exit_error_free(char *str, int i,t_table *table);
 // utils.c
-int		ft_atoi(const char *str);
+unsigned long	ft_atoi(const char *str);
 int		is_num(char *str);
 int		ft_strlen(char *str);
 int		ft_strcmp(char *s1, char *s2);
