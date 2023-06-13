@@ -75,7 +75,7 @@ typedef struct s_table
 	t_philo				*philos;
 	pthread_mutex_t		*forks;
 	pthread_mutex_t		writing;
-	pthread_mutex_t		serving;
+	pthread_mutex_t		status;
 }						t_table;
 // main.c
 void					check_args(int argc, char **argv);
@@ -94,6 +94,7 @@ void					invite_philos(t_table *table);
 t_table					*set_table(int argc, char **argv);
 // simulation.c
 void					*routine(void *arg);
+void					print_dead_action(t_philo *philo, t_table *table, char *str);
 void					monitor_philos(t_table *table, int i);
 void					start_sim(t_table *table);
 void					end_sim(t_table *table, int i, int status);
@@ -103,5 +104,8 @@ void					print_action(t_philo *philo, t_table *table, char *str);
 void					go_sleep(t_philo *philo, unsigned long time);
 void					is_eating(t_philo *philo, unsigned long time);
 unsigned long			get_time(void);
+
+void	pick_up_forks(t_philo *philo, t_table *table);
+void	put_down_forks(t_philo *philo, t_table *table);
 
 #endif

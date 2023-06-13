@@ -14,23 +14,47 @@
 
 void	go_eat(t_philo *philo, t_table *table)
 {
-	pthread_mutex_lock(&table->forks[philo->right_fork]);
-	print_action(philo, table, "has taken a fork\n");
-	pthread_mutex_lock(&table->forks[philo->left_fork]);
-	print_action(philo, table, "has taken a fork\n");
-	pthread_mutex_lock(&table->serving);
+	pick_up_forks(philo, table);
 	print_action(philo, table, "is eating\n");
+	pthread_mutex_lock(&table->status);
 	philo->last_meal = get_time();
-	philo->n_meals++;
-	pthread_mutex_unlock(&table->serving);
+	pthread_mutex_unlock(&table->status);
 	is_eating(philo, table->t_eat);
-	pthread_mutex_unlock(&table->forks[philo->right_fork]);
-	pthread_mutex_unlock(&table->forks[philo->left_fork]);
-	print_action(philo, table, "put down forks\n");	
-	if (philo->n_meals == table->n_meals)
+	put_down_forks(philo, table);
+	pthread_mutex_lock(&table->status);
+	philo->n_meals++;
+	pthread_mutex_unlock(&table->status);
+}
+
+void	pick_up_forks(t_philo *philo, t_table *table)
+{
+	if (philo->pos % 2)
 	{
-		print_action(philo, table, "is full\n");
-		philo->status = FULL;
+		pthread_mutex_lock(&table->forks[philo->right_fork]);
+		print_action(philo, table, "has taken a fork\n");
+		pthread_mutex_lock(&table->forks[philo->left_fork]);
+		print_action(philo, table, "has taken a fork\n");
+	}
+	else
+	{
+		pthread_mutex_lock(&table->forks[philo->left_fork]);
+		print_action(philo, table, "has taken a fork\n");
+		pthread_mutex_lock(&table->forks[philo->right_fork]);
+		print_action(philo, table, "has taken a fork\n");
+	}
+}
+
+void	put_down_forks(t_philo *philo, t_table *table)
+{
+	if (philo->pos % 2)
+	{
+		pthread_mutex_unlock(&table->forks[philo->right_fork]);
+		pthread_mutex_unlock(&table->forks[philo->left_fork]);
+	}
+	else
+	{
+		pthread_mutex_unlock(&table->forks[philo->left_fork]);
+		pthread_mutex_unlock(&table->forks[philo->right_fork]);
 	}
 }
 
@@ -46,12 +70,12 @@ void	print_action(t_philo *philo, t_table *table, char *str)
 		printf(COLOR_BLUE);
 	else if (ft_strcmp(str, "is thinking\n") == 0)
 		printf(COLOR_YELLOW);
-	else if (ft_strcmp(str, "is full\n") == 0)
-		printf(COLOR_MAGENTA);
 	else if (ft_strcmp(str, "died\n") == 0)
 		printf(COLOR_RED);
-	if (philo->status == ALIVE && !(table->stop))
+	pthread_mutex_lock(&table->status);
+	if (philo->status != DEAD && table->stop == 0)
 		printf("%lu %d %s", time, philo->pos, str);
+	pthread_mutex_unlock(&table->status);
 	printf(COLOR_RESET);
 	pthread_mutex_unlock(&table->writing);
 }
@@ -59,10 +83,11 @@ void	print_action(t_philo *philo, t_table *table, char *str)
 void	go_sleep(t_philo *philo, unsigned long time)
 {
 	unsigned long	start;
+	(void) philo;
 
 	start = get_time();
 	usleep(time * 1000);
-	while (philo->status == ALIVE)
+	while (1)
 	{
 		if ((get_time() - start) >= time)
 			break ;
@@ -72,10 +97,11 @@ void	go_sleep(t_philo *philo, unsigned long time)
 void	is_eating(t_philo *philo, unsigned long time)
 {
 	unsigned long	start;
+	(void) philo;
 
 	start = get_time();
 	usleep(time * 1000);
-	while (philo->status == ALIVE)
+	while (1)
 	{
 		if ((get_time() - start) >= time)
 			break ;

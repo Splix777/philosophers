@@ -27,7 +27,7 @@ void	exit_error_free(char *str, int i, t_table *table)
 		pthread_mutex_destroy(&table->forks[i]);
 	}
 	pthread_mutex_destroy(&table->writing);
-	pthread_mutex_destroy(&table->serving);
+	pthread_mutex_destroy(&table->status);
 	free(table->forks);
 	free(table->philos);
 	free(table);

@@ -23,19 +23,32 @@ void	*routine(void *arg)
 		go_sleep(philo, table->t_eat);
 	while (1)
 	{
-		pthread_mutex_lock(&table->serving);
-		if (table->stop)
-		{
-			pthread_mutex_unlock(&table->serving);
-			break ;
-		}
-		pthread_mutex_unlock(&table->serving);
 		go_eat(philo, table);
 		print_action(philo, table, "is sleeping\n");
 		go_sleep(philo, table->t_sleep);
 		print_action(philo, table, "is thinking\n");
+		pthread_mutex_lock(&table->status);
+		if (table->stop)
+		{
+			pthread_mutex_unlock(&table->status);
+			break ;
+		}
+		pthread_mutex_unlock(&table->status);
 	}
 	return (NULL);
+}
+
+void	print_dead_action(t_philo *philo, t_table *table, char *str)
+{
+	unsigned long	time;
+
+	time = get_time() - table->t_start;
+	pthread_mutex_lock(&table->writing);
+	if (ft_strcmp(str, "died\n") == 0)
+		printf(COLOR_RED);
+	printf("%lu %d %s", time, philo->pos, str);
+	printf(COLOR_RESET);
+	pthread_mutex_unlock(&table->writing);
 }
 
 void	monitor_philos(t_table *table, int i)
@@ -45,7 +58,7 @@ void	monitor_philos(t_table *table, int i)
 	full = 0;
 	while (!table->stop)
 	{
-		pthread_mutex_lock(&table->serving);
+		pthread_mutex_lock(&table->status);
 		if (table->philos[i].n_meals == table->n_meals
 			&& table->philos[i].status == ALIVE)
 		{
@@ -56,12 +69,14 @@ void	monitor_philos(t_table *table, int i)
 			table->stop = 2;		
 		if ((get_time() - table->philos[i].last_meal) > table->t_die)
 		{
-			print_action(&table->philos[i], table, "died\n");
 			table->stop = 1;
+			table->philos[i].status = DEAD;
+			pthread_mutex_unlock(&table->status);
+			print_dead_action(&table->philos[i], table, "died\n");
+			break ;
 		}
-		pthread_mutex_unlock(&table->serving);
+		pthread_mutex_unlock(&table->status);
 		i = (i + 1) % table->n_philo;
-		usleep(1000);
 	}
 }
 
@@ -99,7 +114,7 @@ void	end_sim(t_table *table, int i, int status)
 		i--;
 	}
 	pthread_mutex_destroy(&table->writing);
-	pthread_mutex_destroy(&table->serving);
+	pthread_mutex_destroy(&table->status);
 	i = 0;
 	while (i < table->n_philo)
 	{
