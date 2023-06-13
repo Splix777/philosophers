@@ -20,6 +20,7 @@ RM = rm -f
 
 SRC = main.c \
 	  actions.c \
+	  actions2.c \
 	  errors_and_exits.c \
 	  set_table.c \
 	  simulation.c \

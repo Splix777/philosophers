@@ -84,6 +84,7 @@ void					exit_error(char *str);
 void					exit_error_free(char *str, int i, t_table *table);
 // utils.c
 unsigned long			ft_atoi(const char *str);
+unsigned long			get_time(void);
 int						is_num(char *str);
 int						ft_strlen(char *str);
 int						ft_strcmp(char *s1, char *s2);
@@ -98,14 +99,13 @@ void					print_dead_action(t_philo *philo, t_table *table, char *str);
 void					monitor_philos(t_table *table, int i);
 void					start_sim(t_table *table);
 void					end_sim(t_table *table, int i, int status);
+// actions2.c
+void					go_sleep(t_philo *philo, unsigned long time);
+void					is_eating(t_philo *philo, unsigned long time);
 // actions.c
 void					go_eat(t_philo *philo, t_table *table);
 void					print_action(t_philo *philo, t_table *table, char *str);
-void					go_sleep(t_philo *philo, unsigned long time);
-void					is_eating(t_philo *philo, unsigned long time);
-unsigned long			get_time(void);
-
-void	pick_up_forks(t_philo *philo, t_table *table);
-void	put_down_forks(t_philo *philo, t_table *table);
+void					pick_up_forks(t_philo *philo, t_table *table);
+void					put_down_forks(t_philo *philo, t_table *table);
 
 #endif
