@@ -38,19 +38,6 @@ void	*routine(void *arg)
 	return (NULL);
 }
 
-void	print_dead_action(t_philo *philo, t_table *table, char *str)
-{
-	unsigned long	time;
-
-	time = get_time() - table->t_start;
-	pthread_mutex_lock(&table->writing);
-	if (ft_strcmp(str, "died\n") == 0)
-		printf(COLOR_RED);
-	printf("%lu %d %s", time, philo->pos, str);
-	printf(COLOR_RESET);
-	pthread_mutex_unlock(&table->writing);
-}
-
 void	monitor_philos(t_table *table, int i)
 {
 	int	full;
@@ -125,4 +112,17 @@ void	end_sim(t_table *table, int i, int status)
 	free(table->philos);
 	free(table);
 	exit(status);
+}
+
+void	print_dead_action(t_philo *philo, t_table *table, char *str)
+{
+	unsigned long	time;
+
+	time = get_time() - table->t_start;
+	pthread_mutex_lock(&table->writing);
+	if (ft_strcmp(str, "died\n") == 0)
+		printf(COLOR_RED);
+	printf("%lu %d %s", time, philo->pos, str);
+	printf(COLOR_RESET);
+	pthread_mutex_unlock(&table->writing);
 }

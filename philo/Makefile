@@ -41,6 +41,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ)
 	@echo "$(GREEN)$(CHECKMARK) $(NAME) created.$(RESET)"
+	@echo "$(GREEN)./$(NAME) <N_PHILS> <TIME_TO_DIE> <TIME_TO_EAT> <TIME_TO_SLEEP> [N_EAT]$(RESET)"
 
 $(OBJ_DIR)/%.o: %.c
 	@mkdir -p $(OBJ_DIR)
