@@ -70,8 +70,8 @@ void	print_action(t_philo *philo, t_table *table, char *str)
 		printf(COLOR_BLUE);
 	else if (ft_strcmp(str, "is thinking\n") == 0)
 		printf(COLOR_YELLOW);
-	else if (ft_strcmp(str, "died\n") == 0)
-		printf(COLOR_RED);
+	// else if (ft_strcmp(str, "died\n") == 0)
+	// 	printf(COLOR_RED);
 	pthread_mutex_lock(&table->status);
 	if (philo->status != DEAD && table->stop == 0)
 		printf("%lu %d %s", time, philo->pos, str);
