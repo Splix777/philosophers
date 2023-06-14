@@ -28,18 +28,8 @@ void	*routine(void *arg)
 		print_action(philo, table, "is sleeping\n");
 		go_sleep(philo, table->t_sleep);
 		print_action(philo, table, "is thinking\n");
-		pthread_mutex_lock(&table->status);
-		if (philo->n_meals == table->n_meals)
-		{
-			pthread_mutex_unlock(&table->status);
+		if (ft_checker(philo, table))
 			break ;
-		}
-		if (table->stop)
-		{
-			pthread_mutex_unlock(&table->status);
-			break ;
-		}
-		pthread_mutex_unlock(&table->status);
 	}
 	return (NULL);
 }
@@ -57,7 +47,7 @@ void	monitor_philos(t_table *table, int i, int full)
 		}
 		if (full == table->n_philo)
 			table->stop = 2;
-		if ((get_time() - table->philos[i].last_meal) > table->t_die)
+		if ((get_time() - table->philos[i].last_meal) >= table->t_die)
 		{
 			table->stop = 1;
 			table->philos[i].status = DEAD;

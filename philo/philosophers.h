@@ -103,6 +103,7 @@ void					end_sim(t_table *table, int i, int status);
 // actions2.c
 void					go_sleep(t_philo *philo, unsigned long time);
 void					is_eating(t_philo *philo, unsigned long time);
+int						ft_checker(t_philo *philo, t_table *table);
 // actions.c
 void					go_eat(t_philo *philo, t_table *table);
 void					print_action(t_philo *philo, t_table *table, char *str);

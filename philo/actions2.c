@@ -39,3 +39,20 @@ void	is_eating(t_philo *philo, unsigned long time)
 			break ;
 	}
 }
+
+int	ft_checker(t_philo *philo, t_table *table)
+{
+	pthread_mutex_lock(&table->status);
+	if (philo->n_meals == table->n_meals)
+	{
+		pthread_mutex_unlock(&table->status);
+		return (1);
+	}
+	if (table->stop)
+	{
+		pthread_mutex_unlock(&table->status);
+		return (1);
+	}
+	pthread_mutex_unlock(&table->status);
+	return (0);
+}
