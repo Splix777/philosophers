@@ -38,7 +38,7 @@
 # define COLOR_RESET "\x1b[0m"
 /*Errors*/
 # define ERROR_ARGS "Error: Wrong number of arguments\nFormat: \
-<number_of_philosophers> <time_to_die time_to_eat> <time_to_sleep>\
+<number_of_philosophers> <time_to_die time_to_eat> <time_to_sleep> \
 [number_of_times_each_philosopher_must_eat]\n"
 # define ERROR_FORMAT "Error: Arguments must be positive integers\n"
 # define ERROR_MALLOC "Error: Malloc error\n"

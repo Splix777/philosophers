@@ -28,11 +28,11 @@ void	go_eat(t_philo *philo, t_table *table)
 
 void	pick_up_forks(t_philo *philo, t_table *table)
 {
-	if (philo->pos % 2 && table->n_philo > 3)
+	if (philo->pos % 2)
 	{
-		pthread_mutex_lock(&table->forks[philo->right_fork]);
-		print_action(philo, table, "has taken a fork\n");
 		pthread_mutex_lock(&table->forks[philo->left_fork]);
+		print_action(philo, table, "has taken a fork\n");
+		pthread_mutex_lock(&table->forks[philo->right_fork]);
 		print_action(philo, table, "has taken a fork\n");
 	}
 	else
@@ -46,15 +46,15 @@ void	pick_up_forks(t_philo *philo, t_table *table)
 
 void	put_down_forks(t_philo *philo, t_table *table)
 {
-	if (philo->pos % 2 && table->n_philo > 3)
+	if (philo->pos % 2)
 	{
-		pthread_mutex_unlock(&table->forks[philo->right_fork]);
 		pthread_mutex_unlock(&table->forks[philo->left_fork]);
+		pthread_mutex_unlock(&table->forks[philo->right_fork]);
 	}
 	else
 	{
-		pthread_mutex_unlock(&table->forks[philo->left_fork]);
 		pthread_mutex_unlock(&table->forks[philo->right_fork]);
+		pthread_mutex_unlock(&table->forks[philo->left_fork]);
 	}
 }
 
