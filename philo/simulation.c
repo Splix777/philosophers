@@ -56,7 +56,7 @@ void	monitor_philos(t_table *table, int i, int full)
 			full++;
 		}
 		if (full == table->n_philo)
-			table->stop = 2;		
+			table->stop = 2;
 		if ((get_time() - table->philos[i].last_meal) > table->t_die)
 		{
 			table->stop = 1;
