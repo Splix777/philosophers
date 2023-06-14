@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: fsalazar <fsalazar@student.42madrid.com:>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/12 11:10:46 by fsalazar          #+#    #+#             */
-/*   Updated: 2023/06/12 11:10:48 by fsalazar         ###   ########.fr       */
+/*   Created: 2023/06/14 11:53:11 by fsalazar          #+#    #+#             */
+/*   Updated: 2023/06/14 11:53:14 by fsalazar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	go_eat(t_philo *philo, t_table *table)
 
 void	pick_up_forks(t_philo *philo, t_table *table)
 {
-	if (philo->pos % 2)
+	if (philo->pos % 2 && table->n_philo > 3)
 	{
 		pthread_mutex_lock(&table->forks[philo->right_fork]);
 		print_action(philo, table, "has taken a fork\n");
@@ -46,7 +46,7 @@ void	pick_up_forks(t_philo *philo, t_table *table)
 
 void	put_down_forks(t_philo *philo, t_table *table)
 {
-	if (philo->pos % 2)
+	if (philo->pos % 2 && table->n_philo > 3)
 	{
 		pthread_mutex_unlock(&table->forks[philo->right_fork]);
 		pthread_mutex_unlock(&table->forks[philo->left_fork]);
@@ -79,4 +79,3 @@ void	print_action(t_philo *philo, t_table *table, char *str)
 	printf(COLOR_RESET);
 	pthread_mutex_unlock(&table->writing);
 }
-

@@ -95,8 +95,9 @@ void					invite_philos(t_table *table);
 t_table					*set_table(int argc, char **argv);
 // simulation.c
 void					*routine(void *arg);
-void					print_dead_action(t_philo *philo, t_table *table, char *str);
-void					monitor_philos(t_table *table, int i);
+void					print_dead_action(t_philo *philo, t_table *table,
+							char *str);
+void					monitor_philos(t_table *table, int i, int full);
 void					start_sim(t_table *table);
 void					end_sim(t_table *table, int i, int status);
 // actions2.c

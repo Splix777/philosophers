@@ -23,11 +23,17 @@ void	*routine(void *arg)
 		go_sleep(philo, table->t_eat);
 	while (1)
 	{
+		pthread_mutex_unlock(&table->status);
 		go_eat(philo, table);
 		print_action(philo, table, "is sleeping\n");
 		go_sleep(philo, table->t_sleep);
 		print_action(philo, table, "is thinking\n");
 		pthread_mutex_lock(&table->status);
+		if (philo->n_meals == table->n_meals)
+		{
+			pthread_mutex_unlock(&table->status);
+			break ;
+		}
 		if (table->stop)
 		{
 			pthread_mutex_unlock(&table->status);
@@ -38,11 +44,8 @@ void	*routine(void *arg)
 	return (NULL);
 }
 
-void	monitor_philos(t_table *table, int i)
+void	monitor_philos(t_table *table, int i, int full)
 {
-	int	full;
-
-	full = 0;
 	while (!table->stop)
 	{
 		pthread_mutex_lock(&table->status);
@@ -64,12 +67,14 @@ void	monitor_philos(t_table *table, int i)
 		}
 		pthread_mutex_unlock(&table->status);
 		i = (i + 1) % table->n_philo;
+		usleep(20);
 	}
 }
 
 void	start_sim(t_table *table)
 {
 	int	i;
+	int	full;
 
 	i = 0;
 	table->t_start = get_time();
@@ -84,7 +89,8 @@ void	start_sim(t_table *table)
 		i++;
 	}
 	i = 0;
-	monitor_philos(table, i);
+	full = 0;
+	monitor_philos(table, i, full);
 }
 
 void	end_sim(t_table *table, int i, int status)
