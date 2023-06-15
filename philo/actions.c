@@ -37,9 +37,9 @@ void	pick_up_forks(t_philo *philo, t_table *table)
 	}
 	else
 	{
-		pthread_mutex_lock(&table->forks[philo->left_fork]);
-		print_action(philo, table, "has taken a fork\n");
 		pthread_mutex_lock(&table->forks[philo->right_fork]);
+		print_action(philo, table, "has taken a fork\n");
+		pthread_mutex_lock(&table->forks[philo->left_fork]);
 		print_action(philo, table, "has taken a fork\n");
 	}
 }

@@ -23,7 +23,6 @@ void	*routine(void *arg)
 		go_sleep(philo, table->t_eat);
 	while (1)
 	{
-		pthread_mutex_unlock(&table->status);
 		go_eat(philo, table);
 		print_action(philo, table, "is sleeping\n");
 		go_sleep(philo, table->t_sleep);
